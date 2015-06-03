@@ -12,4 +12,7 @@ post_upgrade() {
 	echo "# systemctl start snapper-cleanup.timer"
 	echo "# systemctl start snapper-timeline.timer"
 	echo
+	echo -e "You should now run 'snapper create-config /' while root to start 
+using snapper
+See also https://en.opensuse.org/openSUSE:Snapper_FAQ\n"
 }
