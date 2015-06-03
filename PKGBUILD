@@ -1,19 +1,24 @@
 pkgname=snapper
-pkgver=0.2.6
+pkgver=0.2.7.git.1060.b7f5d9e
 pkgrel=1
 pkgdesc="A tool for managing BTRFS and LVM snapshots. It can create, diff and restore snapshots and provides timelined auto-snapping."
-arch=("x86_64")
-url="http://snapper.io/"
+arch=('x86_64')
+url="http://snapper.io"
 license=('GPL2')
 depends=('btrfs-progs' 'libxml2' 'dbus' 'boost' 'pam')
 makedepends=('lvm2' 'libxslt' 'docbook-xsl' 'git')
-backup=('etc/conf.d/snapper')
-source=("ftp://ftp.suse.com/pub/projects/$pkgname/$pkgname-$pkgver.tar.bz2")
 install=snapper.install
-sha512sums=('d49eef086d84f02106691872db6369b10cb55a6afe6f2cfb6c790330321397d66dc1aa0229d31d9e3c7b1efb6bd6c0fd9242dbb69a44fe3433233717df98a334')
+backup=('etc/conf.d/snapper')
+source=('snapper::git+https://github.com/openSUSE/snapper.git')
+sha512sums=('SKIP')
+
+pkgver() {
+  cd "$pkgname"
+  echo $(cat VERSION).git.$(git rev-list --count HEAD).$(git rev-parse --short master)
+}
 
 prepare() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname"
 
   ## Build fixes
   # boost fixlets - Arch doesn't use -mt suffix
@@ -37,11 +42,13 @@ prepare() {
     -i data/timeline.timer
   sed '/cron./d' -i scripts/Makefile.am
   sed -e 's@noinst_PROGRAMS@libexec_PROGRAMS@g' -i client/Makefile.am
+  sed -e 's@CXXFLAGS@AM_CXXFLAGS@g' -i client/Makefile.am
+  
 }
 
 build() {
-    cd "$pkgname-$pkgver"
-    
+  cd "$pkgname"
+
   aclocal
   libtoolize --force --automake --copy
   autoheader
@@ -59,8 +66,8 @@ build() {
 }
 
 package() {
-    cd "$pkgname-$pkgver"
-    make DESTDIR="${pkgdir}" install
+  cd "$pkgname"
+  make DESTDIR="${pkgdir}" install
   install -Dm644 data/sysconfig.snapper "${pkgdir}"/etc/conf.d/snapper
 
   # systemd timer units
