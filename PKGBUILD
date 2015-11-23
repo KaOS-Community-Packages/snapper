@@ -5,8 +5,9 @@ pkgdesc="A tool for managing BTRFS and LVM snapshots. It can create, diff and re
 arch=('x86_64')
 url="http://snapper.io"
 license=('GPL2')
+install=snapper.install
 depends=('btrfs-progs' 'pam' 'libxml2' 'dbus' 'boost-libs' 'acl')
-makedepends=('boost' 'lvm2' 'libxslt' 'docbook-xsl' 'pam' 'git' 'systemd')
+makedepends=('boost' 'lvm2' 'libxslt' 'docbook-xsl' 'git' 'systemd')
 backup=('etc/conf.d/snapper')
 source=("ftp://ftp.suse.com/pub/projects/$pkgname/$pkgname-$pkgver.tar.bz2")
 
